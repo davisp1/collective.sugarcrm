@@ -84,7 +84,8 @@ class WebService(object):
             client = get_suds_client(url, context=self.context, location=url)
         except ValueError:
             logger.error("invalid SOAP URL: client instanciation fail")
-
+        except URLError:
+            logger.error("Error !")
         valid = True  # try now to validate the existing client
         if client is not None:
             for method in METHODS:
@@ -237,6 +238,28 @@ class WebService(object):
 
         #logger.debug(u'ws.get_entry(%s, %s) -> %s'%(module, id, info))
         return info
+
+    def set_entry(self, session=None, module='Contacts', name_value_list={}):
+        """
+            name_value_list : { name : value } ==> 
+              if you include key 'id' it will be for updating, otherwise it's for creating
+        """
+
+        if not self.activated:
+            return
+        if self.client is None:
+            return
+        if type(name_value_list) != dict or len(name_value_list.keys())==0:
+            return 
+
+        if session is None:  # session as arg
+            session = self.session
+        if session is None:  # session is invalid
+            return {}
+
+        results = self.client.service.set_entry(session, module, name_value_list)
+
+        return results
 
     def get_module_fields(self, session=None, module="Contacts"):
 
