@@ -258,13 +258,11 @@ class WebService(object):
             return {}
 
         results = self.client.service.set_entry(session, module, name_value_list)
-
         return results
 
-    def get_entry_list(self, session=None, module='Contacts'):
+    def get_entry_list(self, session=None, module='Contacts', query=""):
         """
-            name_value_list : { name : value } ==>
-              if you include key 'id' it will be for updating, otherwise it's for creating
+            query : SQL
         """
 
         if not self.activated:
@@ -277,9 +275,11 @@ class WebService(object):
         if session is None:  # session is invalid
             return {}
 
-        results = self.client.service.set_entry(session, module)
+        results = self.client.service.get_entry_list(session, module, query=query)
 
-        return results
+        infos = [self._entry2dict(entry) for entry in results.entry_list]
+
+        return infos
 
     def get_module_fields(self, session=None, module="Contacts"):
 
