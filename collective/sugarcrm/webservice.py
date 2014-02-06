@@ -241,7 +241,7 @@ class WebService(object):
 
     def set_entry(self, session=None, module='Contacts', name_value_list={}):
         """
-            name_value_list : { name : value } ==> 
+            name_value_list : { name : value } ==>
               if you include key 'id' it will be for updating, otherwise it's for creating
         """
 
@@ -249,8 +249,8 @@ class WebService(object):
             return
         if self.client is None:
             return
-        if type(name_value_list) != dict or len(name_value_list.keys())==0:
-            return 
+        if type(name_value_list) != dict or len(name_value_list.keys()) == 0:
+            return
 
         if session is None:  # session as arg
             session = self.session
@@ -258,6 +258,26 @@ class WebService(object):
             return {}
 
         results = self.client.service.set_entry(session, module, name_value_list)
+
+        return results
+
+    def get_entry_list(self, session=None, module='Contacts'):
+        """
+            name_value_list : { name : value } ==>
+              if you include key 'id' it will be for updating, otherwise it's for creating
+        """
+
+        if not self.activated:
+            return
+        if self.client is None:
+            return
+
+        if session is None:  # session as arg
+            session = self.session
+        if session is None:  # session is invalid
+            return {}
+
+        results = self.client.service.set_entry(session, module)
 
         return results
 
