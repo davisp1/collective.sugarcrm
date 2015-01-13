@@ -260,7 +260,7 @@ class WebService(object):
         results = self.client.service.set_entry(session, module, name_value_list)
         return results
 
-    def get_entry_list(self, session=None, module='Contacts', query=""):
+    def get_entry_list(self, session=None, module='Contacts', query="", order_by="id"):
         """
             query : SQL
         """
@@ -274,12 +274,23 @@ class WebService(object):
             session = self.session
         if session is None:  # session is invalid
             return {}
+        
+        offset = 0
+        counter = 0
+        max_loop = 100
+        is_continue = True
+        results = []
 
-        results = self.client.service.get_entry_list(session, module, query=query)
-
-        infos = [self._entry2dict(entry) for entry in results.entry_list]
-
-        return infos
+        while(is_continue and counter <= max_loop):
+            counter += 1
+            partial_results = self.client.service.get_entry_list(session, module, query=query, offset=offset, order_by=order_by)
+            results += [self._entry2dict(entry) for entry in partial_results.entry_list]
+            if partial_results.result_count == 0:
+                is_continue = False
+	    else:
+                offset = partial_results.next_offset
+  
+        return results
 
     def get_module_fields(self, session=None, module="Contacts"):
 
