@@ -287,9 +287,9 @@ class WebService(object):
             results += [self._entry2dict(entry) for entry in partial_results.entry_list]
             if partial_results.result_count == 0:
                 is_continue = False
-	    else:
+            else:
                 offset = partial_results.next_offset
-  
+
         return results
 
     def get_module_fields(self, session=None, module="Contacts"):
